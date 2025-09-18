@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo de Precios - Comercializadora Futur Green</title>
-    <script src="https://cdn.tailwindcss.com"></script> 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- LIBRERÍAS PARA GENERAR PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,23 +21,33 @@
             right: 24px;
             z-index: 50;
         }
+        /* Estilo para que el botón de descarga no se imprima en el PDF */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
 
-    <div class="container mx-auto p-4 sm:p-8 max-w-4xl">
+    <!-- Contenedor principal que será convertido a PDF -->
+    <div id="cotizacion-container" class="container mx-auto p-4 sm:p-8 max-w-4xl bg-white sm:shadow-lg sm:my-8 sm:rounded-lg">
 
+        <!-- ===== ENCABEZADO CON LOGO ===== -->
         <header class="flex justify-between items-center pb-8 border-b border-slate-200">
             <div>
                 <h1 class="text-2xl font-bold text-slate-900">Comercializadora Futur Green</h1>
                 <p class="text-sm text-slate-500">El futuro es circular</p>
             </div>
-            </header>
+            <!-- Asegúrate de subir tu logo a la carpeta 'assets' y nombrarlo 'logo-futur-green.jpg' -->
+            <img src="assets/logo-futur-green.jpg" alt="Logo Futur Green" class="h-16">
+        </header>
 
         <main class="mt-8">
-
-            <section id="info-cotizacion" class="mb-8 p-6 bg-white rounded-lg shadow-sm border border-slate-200">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- ===== INFORMACIÓN DE LA COTIZACIÓN Y BOTÓN DE DESCARGA ===== -->
+            <section class="mb-8 p-6 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div>
                         <h2 class="text-sm font-semibold text-slate-500">CLIENTE</h2>
                         <p id="cliente-nombre" class="text-lg font-bold"></p>
@@ -48,9 +61,16 @@
                         <p id="cotizacion-numero" class="text-lg"></p>
                     </div>
                 </div>
+                 <!-- ===== NUEVO BOTÓN DE DESCARGA ===== -->
+                <div class="mt-6 text-center no-print">
+                    <button onclick="descargarPDF()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg transition-transform transform hover:scale-105">
+                        Descargar Cotización (PDF)
+                    </button>
+                </div>
             </section>
             
-            <section class="bg-white rounded-lg shadow-sm overflow-hidden border border-slate-200">
+            <!-- ===== TABLA DE PRECIOS ===== -->
+            <section class="overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left text-slate-600">
                         <thead class="text-xs text-slate-700 uppercase bg-slate-100">
@@ -63,23 +83,24 @@
                             </tr>
                         </thead>
                         <tbody id="tabla-productos">
-                            </tbody>
+                            <!-- Filas generadas por JS -->
+                        </tbody>
                     </table>
                 </div>
             </section>
-
         </main>
 
+        <!-- ===== PIE DE PÁGINA ===== -->
         <footer class="text-center mt-12 pt-8 border-t border-slate-200">
             <p class="font-bold">Comercializadora Futur Green — Catálogo de Precios</p>
             <p class="text-sm text-slate-500" id="footer-contacto"></p>
             <p class="text-sm text-slate-500">Cali, Colombia</p>
         </footer>
-
     </div>
 
-    <a id="whatsapp-link" href="#" target="_blank" rel="noopener" class="whatsapp-fab bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-full shadow-lg flex items-center gap-2 transition-transform transform hover:scale-105">
-        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM5.5 8.5a1 1 0 011-1h1.172l.53-1.06A1 1 0 019.268 6h1.464a1 1 0 01.962.74l.53 1.06H13.5a1 1 0 011 1v4a1 1 0 01-1 1h-1.172l-.53 1.06A1 1 0 0110.732 15H9.268a1 1 0 01-.962-.74l-.53-1.06H6.5a1 1 0 01-1-1v-4zM10 13a2 2 0 100-4 2 2 0 000 4z"/></svg>
+    <!-- ===== BOTÓN FLOTANTE DE WHATSAPP (no se imprime) ===== -->
+    <a id="whatsapp-link" href="#" target="_blank" rel="noopener" class="whatsapp-fab bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-full shadow-lg flex items-center gap-2 transition-transform transform hover:scale-105 no-print">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.487 5.235 3.487 8.413 0 6.557-5.338 11.892-11.894 11.892-1.99 0-3.903-.52-5.687-1.475L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.886-.001 2.267.655 4.398 1.803 6.243l-.499 1.804 1.807-.497z"/></svg>
         <span>Cotiza aquí</span>
     </a>
 
@@ -88,15 +109,10 @@
         // ===== SECCIÓN DE CONFIGURACIÓN (ÚNICO LUGAR PARA MODIFICAR) =====
         // ===================================================================
         const config = {
-            // Información de la cotización
-            cliente: "Seneida Franco",
-            fecha: "18/09/2025",
+            cliente: "Ferreteria Shop Cali",
+            fecha: "09/09/2025",
             cotizacion: "001",
-
-            // Información de contacto
-            whatsapp: "573187514195", // Número en formato internacional sin el '+'
-            
-            // Lista de productos para la tabla
+            whatsapp: "573187514195",
             productos: [
                 { producto: "Bolsa Manigueta", tamano: "T-15", empaque: "Paq x1000", precioUnd: 1900, precioPaca: 1900000 },
                 { producto: "Bolsa Manigueta", tamano: "T-19", empaque: "Paq x1000", precioUnd: 2250, precioPaca: 2250000 },
@@ -105,45 +121,64 @@
                 { producto: "Bolsa Manigueta", tamano: "T-30", empaque: "Paq x1000", precioUnd: 5500, precioPaca: 5500000 },
                 { producto: "Bolsa Manigueta", tamano: "T-40", empaque: "Paq x1000", precioUnd: 9500, precioPaca: 9500000 },
                 { producto: "Bolsa Manigueta", tamano: "T-50", empaque: "Paq x1000", precioUnd: 13000, precioPaca: 13000000 },
-                 // Para agregar un nuevo producto, copia y pega una línea de arriba y cambia los valores.
             ]
         };
         // ===================================================================
         // ===== FIN DE LA SECCIÓN DE CONFIGURACIÓN =====
         // ===================================================================
 
+        const { jsPDF } = window.jspdf;
 
-        // --- Este código carga la configuración en la página. No necesita ser modificado. ---
+        function descargarPDF() {
+            const cotizacionElement = document.getElementById('cotizacion-container');
+            const nombreArchivo = `Cotizacion-${config.cotizacion}-${config.cliente.replace(/ /g, '_')}.pdf`;
+            
+            // Ocultar botones antes de la captura
+            const botones = document.querySelectorAll('.no-print');
+            botones.forEach(btn => btn.style.display = 'none');
+
+            html2canvas(cotizacionElement, {
+                scale: 2, 
+                useCORS: true 
+            }).then(canvas => {
+                // Volver a mostrar botones después de la captura
+                botones.forEach(btn => btn.style.display = '');
+
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF({
+                    orientation: 'p',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const canvasWidth = canvas.width;
+                const canvasHeight = canvas.height;
+                const canvasAspectRatio = canvasWidth / canvasHeight;
+                
+                const finalWidth = pdfWidth;
+                const finalHeight = finalWidth / canvasAspectRatio;
+
+                pdf.addImage(imgData, 'PNG', 0, 0, finalWidth, finalHeight);
+                pdf.save(nombreArchivo);
+            });
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Formateador de moneda para pesos colombianos
             const currencyFormatter = new Intl.NumberFormat('es-CO', {
-                style: 'currency',
-                currency: 'COP',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
+                style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0,
             });
-
-            // Cargar información de la cotización
             document.getElementById('cliente-nombre').textContent = config.cliente;
             document.getElementById('cotizacion-fecha').textContent = config.fecha;
             document.getElementById('cotizacion-numero').textContent = config.cotizacion;
-
-            // Cargar pie de página
             document.getElementById('footer-contacto').textContent = `WhatsApp: (+57) ${config.whatsapp.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')}`;
-
-            // Cargar enlace de WhatsApp
             const whatsappMsg = encodeURIComponent(`Hola, estoy interesado en la cotización #${config.cotizacion} para ${config.cliente}.`);
             document.getElementById('whatsapp-link').href = `https://wa.me/${config.whatsapp}?text=${whatsappMsg}`;
-
-            // Cargar productos en la tabla
             const tablaBody = document.getElementById('tabla-productos');
-            tablaBody.innerHTML = ''; // Limpiar cualquier contenido existente
-
+            tablaBody.innerHTML = '';
             config.productos.forEach(p => {
                 const fila = document.createElement('tr');
                 fila.className = 'bg-white border-b border-slate-200 hover:bg-slate-50';
-                
                 fila.innerHTML = `
                     <td class="px-6 py-4 font-medium text-slate-900">${p.producto}</td>
                     <td class="px-6 py-4">${p.tamano}</td>
@@ -151,12 +186,10 @@
                     <td class="px-6 py-4 text-right">${currencyFormatter.format(p.precioUnd)}</td>
                     <td class="px-6 py-4 text-right font-bold">${currencyFormatter.format(p.precioPaca)}</td>
                 `;
-                
                 tablaBody.appendChild(fila);
             });
         });
     </script>
-
 </body>
 </html>
 

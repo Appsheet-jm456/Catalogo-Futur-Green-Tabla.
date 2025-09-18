@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Precios - Comercializadora Futur Green</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .whatsapp-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 50;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 sm:p-8 max-w-4xl">
+
+        <header class="flex justify-between items-center pb-8 border-b border-slate-200">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">Comercializadora Futur Green</h1>
+                <p class="text-sm text-slate-500">El futuro es circular</p>
+            </div>
+            </header>
+
+        <main class="mt-8">
+
+            <section id="info-cotizacion" class="mb-8 p-6 bg-white rounded-lg shadow-sm border border-slate-200">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <h2 class="text-sm font-semibold text-slate-500">CLIENTE</h2>
+                        <p id="cliente-nombre" class="text-lg font-bold"></p>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-semibold text-slate-500">FECHA</h2>
+                        <p id="cotizacion-fecha" class="text-lg"></p>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-semibold text-slate-500">COTIZACIÓN #</h2>
+                        <p id="cotizacion-numero" class="text-lg"></p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="bg-white rounded-lg shadow-sm overflow-hidden border border-slate-200">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-slate-600">
+                        <thead class="text-xs text-slate-700 uppercase bg-slate-100">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Producto</th>
+                                <th scope="col" class="px-6 py-3">Tamaño</th>
+                                <th scope="col" class="px-6 py-3">Empaque</th>
+                                <th scope="col" class="px-6 py-3 text-right">Precio x Und</th>
+                                <th scope="col" class="px-6 py-3 text-right">Precio x Paca</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-productos">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="text-center mt-12 pt-8 border-t border-slate-200">
+            <p class="font-bold">Comercializadora Futur Green — Catálogo de Precios</p>
+            <p class="text-sm text-slate-500" id="footer-contacto"></p>
+            <p class="text-sm text-slate-500">Cali, Colombia</p>
+        </footer>
+
+    </div>
+
+    <a id="whatsapp-link" href="#" target="_blank" rel="noopener" class="whatsapp-fab bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-full shadow-lg flex items-center gap-2 transition-transform transform hover:scale-105">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM5.5 8.5a1 1 0 011-1h1.172l.53-1.06A1 1 0 019.268 6h1.464a1 1 0 01.962.74l.53 1.06H13.5a1 1 0 011 1v4a1 1 0 01-1 1h-1.172l-.53 1.06A1 1 0 0110.732 15H9.268a1 1 0 01-.962-.74l-.53-1.06H6.5a1 1 0 01-1-1v-4zM10 13a2 2 0 100-4 2 2 0 000 4z"/></svg>
+        <span>Cotiza aquí</span>
+    </a>
+
+    <script>
+        // ===================================================================
+        // ===== SECCIÓN DE CONFIGURACIÓN (ÚNICO LUGAR PARA MODIFICAR) =====
+        // ===================================================================
+        const config = {
+            // Información de la cotización
+            cliente: "Seneida Franco",
+            fecha: "18/09/2025",
+            cotizacion: "001",
+
+            // Información de contacto
+            whatsapp: "573187514195", // Número en formato internacional sin el '+'
+            
+            // Lista de productos para la tabla
+            productos: [
+                { producto: "Bolsa Manigueta", tamano: "T-15", empaque: "Paq x1000", precioUnd: 1900, precioPaca: 1900000 },
+                { producto: "Bolsa Manigueta", tamano: "T-19", empaque: "Paq x1000", precioUnd: 2250, precioPaca: 2250000 },
+                { producto: "Bolsa Manigueta", tamano: "T-20", empaque: "Paq x1000", precioUnd: 2730, precioPaca: 2730000 },
+                { producto: "Bolsa Manigueta", tamano: "T-25", empaque: "Paq x1000", precioUnd: 4000, precioPaca: 4000000 },
+                { producto: "Bolsa Manigueta", tamano: "T-30", empaque: "Paq x1000", precioUnd: 5500, precioPaca: 5500000 },
+                { producto: "Bolsa Manigueta", tamano: "T-40", empaque: "Paq x1000", precioUnd: 9500, precioPaca: 9500000 },
+                { producto: "Bolsa Manigueta", tamano: "T-50", empaque: "Paq x1000", precioUnd: 13000, precioPaca: 13000000 },
+                 // Para agregar un nuevo producto, copia y pega una línea de arriba y cambia los valores.
+            ]
+        };
+        // ===================================================================
+        // ===== FIN DE LA SECCIÓN DE CONFIGURACIÓN =====
+        // ===================================================================
+
+
+        // --- Este código carga la configuración en la página. No necesita ser modificado. ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Formateador de moneda para pesos colombianos
+            const currencyFormatter = new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            });
+
+            // Cargar información de la cotización
+            document.getElementById('cliente-nombre').textContent = config.cliente;
+            document.getElementById('cotizacion-fecha').textContent = config.fecha;
+            document.getElementById('cotizacion-numero').textContent = config.cotizacion;
+
+            // Cargar pie de página
+            document.getElementById('footer-contacto').textContent = `WhatsApp: (+57) ${config.whatsapp.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')}`;
+
+            // Cargar enlace de WhatsApp
+            const whatsappMsg = encodeURIComponent(`Hola, estoy interesado en la cotización #${config.cotizacion} para ${config.cliente}.`);
+            document.getElementById('whatsapp-link').href = `https://wa.me/${config.whatsapp}?text=${whatsappMsg}`;
+
+            // Cargar productos en la tabla
+            const tablaBody = document.getElementById('tabla-productos');
+            tablaBody.innerHTML = ''; // Limpiar cualquier contenido existente
+
+            config.productos.forEach(p => {
+                const fila = document.createElement('tr');
+                fila.className = 'bg-white border-b border-slate-200 hover:bg-slate-50';
+                
+                fila.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-slate-900">${p.producto}</td>
+                    <td class="px-6 py-4">${p.tamano}</td>
+                    <td class="px-6 py-4">${p.empaque}</td>
+                    <td class="px-6 py-4 text-right">${currencyFormatter.format(p.precioUnd)}</td>
+                    <td class="px-6 py-4 text-right font-bold">${currencyFormatter.format(p.precioPaca)}</td>
+                `;
+                
+                tablaBody.appendChild(fila);
+            });
+        });
+    </script>
+
+</body>
+</html>
